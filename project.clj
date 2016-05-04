@@ -1,6 +1,6 @@
 (defproject inin-purecloud/ring-jetty-ws "1.0.0-SNAPSHOT"
   :description ""
-  :url "http://example.com/FIXME"
+  :url "https://github.com/MyPureCloud/ring-jetty-ws"
   :license {:name "MIT License"
             :url "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]
