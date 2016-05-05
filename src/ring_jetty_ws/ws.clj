@@ -99,7 +99,7 @@
                        on-error noop
                        on-text noop
                        on-binary noop}}]
-  (Listener on-connect on-close on-error on-text on-binary))
+  (Listener. on-connect on-close on-error on-text on-binary))
 
 (defn- create-ws-creator [handshake-handler]
   (reify WebSocketCreator
