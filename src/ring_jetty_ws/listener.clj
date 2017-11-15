@@ -3,7 +3,7 @@
     :name ring-jetty-ws.Listener
     :extends org.eclipse.jetty.websocket.api.WebSocketAdapter
     :exposes-methods {onWebSocketConnect superOnConnect
-                      onWebsocketClose   superOnClose}
+                      onWebSocketClose   superOnClose}
     :constructors {[clojure.lang.IFn clojure.lang.IFn clojure.lang.IFn clojure.lang.IFn clojure.lang.IFn] []}
     :init init
     :state handlers)
