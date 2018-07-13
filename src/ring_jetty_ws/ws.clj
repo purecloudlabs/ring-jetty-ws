@@ -62,16 +62,16 @@
 (defn build-request-map
   "Create the request map from the HttpServletRequest object."
   [^HttpServletRequest request]
-  {:server-port        (.getServerPort request)
-   :server-name        (.getServerName request)
-   :remote-addr        (.getRemoteAddr request)
-   :uri                (.getRequestURI request)
-   :query-string       (.getQueryString request)
-   :scheme             (keyword (.getScheme request))
-   :request-method     (keyword (.toLowerCase (.getMethod request) Locale/ENGLISH))
-   :protocol           (.getProtocol request)
-   :headers            (get-headers request)
-   :ssl-client-cert    (get-client-cert request)})
+  {:server-port     (.getServerPort request)
+   :server-name     (.getServerName request)
+   :remote-addr     (.getRemoteAddr request)
+   :uri             (.getRequestURI request)
+   :query-string    (.getQueryString request)
+   :scheme          (keyword (.getScheme request))
+   :request-method  (keyword (.toLowerCase (.getMethod request) Locale/ENGLISH))
+   :protocol        (.getProtocol request)
+   :headers         (get-headers request)
+   :ssl-client-cert (get-client-cert request)})
 
 (defn set-headers [^ServletUpgradeResponse response headers]
   (doseq [[key val-or-vals] headers]
@@ -94,29 +94,29 @@
 (defn- noop [& _args])
 
 (defn- create-ws [{:keys [on-connect on-error on-text on-close on-binary]
-                  :or {on-connect noop
-                       on-close noop
-                       on-error noop
-                       on-text noop
-                       on-binary noop}}]
+                   :or   {on-connect noop
+                          on-close   noop
+                          on-error   noop
+                          on-text    noop
+                          on-binary  noop}}]
   (Listener. on-connect on-close on-error on-text on-binary))
 
 (defn- create-ws-creator [handshake-handler]
   (reify WebSocketCreator
-   (createWebSocket [_this req resp]
-     (let [req-map (build-request-map (.getHttpServletRequest req))
-           handshake-result (handshake-handler req-map)]
-       (update-servlet-response resp handshake-result)
-       (if-let [handlers (:ws-handlers handshake-result)]
-         (create-ws handlers)
-         (.sendError resp (.getStatusCode resp) ""))))))
+    (createWebSocket [_this req resp]
+      (let [req-map (build-request-map (.getHttpServletRequest req))
+            handshake-result (handshake-handler req-map)]
+        (update-servlet-response resp handshake-result)
+        (if-let [handlers (:ws-handlers handshake-result)]
+          (create-ws handlers)
+          (.sendError resp (.getStatusCode resp) ""))))))
 
-(defn- create-ws-handler [handshake-handler]
+(defn- create-ws-handler [handshake-handler ws-factory-configurator]
   "Creates a handler for WebSocket upgrade requests."
   (proxy [WebSocketHandler] []
     (configure [^WebSocketServletFactory factory]
-      ; can configure timeout (and maybe other options) here
-     (.setCreator factory (create-ws-creator handshake-handler)))
+      (ws-factory-configurator factory)
+      (.setCreator factory (create-ws-creator handshake-handler)))
     (handle [target ^Request base-request request response]
       ;If this is a WS request, always mark it as handled.
       (when (.isUpgradeRequest (proxy-super getWebSocketFactory) request response)
@@ -143,12 +143,20 @@
                      :on-binary (fn [ws bytes offset len]
                        (log/debug \"Websocket binary data recived\" len)}}
 
-  The first argument to each handler will be an object fulfilling the WebSocket protocol"
-  [handshake-handler]
-  (fn [^Server server]
-    (let [orig-handler (.getHandler server)
-          ws-handler (create-ws-handler handshake-handler)
-          combined-handler (doto (HandlerList.)
-                             (.addHandler ws-handler)
-                             (.addHandler orig-handler))]
-      (.setHandler server combined-handler))))
+  The first argument to each handler will be an object fulfilling the WebSocket protocol.
+
+  An options object can be provided as a second argument which supports the key
+  :ws-factory-configurator, a function that will be passed a WebSocketServletFactory for
+  configuration"
+  ([handshake-handler]
+   (configurator handshake-handler {}))
+  ([handshake-handler options]
+   (let [{ws-factory-configurator :ws-factory-configurator,
+          :or                     {ws-factory-configurator identity}} options]
+     (fn [^Server server]
+       (let [orig-handler (.getHandler server)
+             ws-handler (create-ws-handler handshake-handler ws-factory-configurator)
+             combined-handler (doto (HandlerList.)
+                                (.addHandler ws-handler)
+                                (.addHandler orig-handler))]
+         (.setHandler server combined-handler))))))
