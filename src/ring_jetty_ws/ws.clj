@@ -80,7 +80,7 @@
       (doseq [val val-or-vals]
         (.addHeader response key val))))
   ; Some headers must be set through specific methods
-  (when-let [protocol (get headers ServletUpgradeResponse/SEC_WEBSOCKET_PROTOCOL)]
+  (when-let [protocol (get headers "Sec-WebSocket-Protocol")]
     (.setAcceptedSubProtocol response protocol)))
 
 (defn update-servlet-response
