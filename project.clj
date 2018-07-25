@@ -1,4 +1,4 @@
-(defproject inin-purecloud/ring-jetty-ws "1.1.0"
+(defproject inin-purecloud/ring-jetty-ws "1.1.1-SNAPSHOT"
   :description ""
   :url "https://github.com/MyPureCloud/ring-jetty-ws"
   :license {:name "MIT License"
