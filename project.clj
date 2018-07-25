@@ -5,7 +5,7 @@
             :url "https://opensource.org/licenses/MIT"}
   :aot [ring-jetty-ws.listener]
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [ org.eclipse.jetty.websocket/websocket-server "9.2.10.v20150310"]]
+                 [ org.eclipse.jetty.websocket/websocket-server "9.2.24.v20180105"]]
   :profiles {
     :provided {
       :dependencies [[ring/ring-jetty-adapter "1.4.0"]]}})
