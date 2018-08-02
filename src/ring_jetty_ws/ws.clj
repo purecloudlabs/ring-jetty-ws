@@ -87,7 +87,7 @@
   "Copy fields from a response map to the ServletUpgradeResponse object"
   [^ServletUpgradeResponse res {:keys [status headers]}]
   (when status
-    (.setStatus res status))
+    (.setStatusCode res status))
   (when headers
     (set-headers res headers)))
 

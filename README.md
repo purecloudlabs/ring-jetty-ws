@@ -36,8 +36,11 @@ For all other requests, the opposite is true.
 
 Add the following to your project's `:dependencies`
 
-    [purecloud/ring-jetty-ws 1.0.0]
+    [purecloud/ring-jetty-ws 1.1.0]
+    
+Or if you are using jetty 9.4:
 
+    [purecloud/ring-jetty-ws 2.0.0]
 
 ## Usage
 
