@@ -11,18 +11,18 @@ Like ring, ring-jetty-ws accepts a handler function that is expected to handle a
 The handler function is passed a request map with the same structure used in ring, and is expected
 to return response maps that are compatible with those used in ring.
 
-This means that your WebSocket handler function will be mostly compatible with ring middleware and 
+This means that your WebSocket handler function will be mostly compatible with ring middleware and
 other ring utilities.
 
 ### You said "mostly compatible" - what's the catch?
 
 WebSocket requests don't include a body, so the request map will not include any body related keys:
 
- * :content-type
- * :content-length 
- * :character-encoding
- * :body 
- 
+- :content-type
+- :content-length
+- :character-encoding
+- :body
+
 Similarly, on the response, only :status, :headers, and :ws-handlers (see below) have meaning. Other
 keys are ignored.
 
@@ -31,13 +31,11 @@ keys are ignored.
 Any request for a WebSocket upgrade will be passed to the WebSocket handler, and will skip your ring handler.
 For all other requests, the opposite is true.
 
-
 ## Installation
 
 Add the following to your project's `:dependencies`
 
-    [purecloud/ring-jetty-ws 1.0.0]
-
+    [genesys-cloud/ring-jetty-ws 1.0.0]
 
 ## Usage
 
@@ -67,7 +65,7 @@ Add the following to your project's `:dependencies`
 
 ## TODO
 
- * Heartbeat support
- * Better binary data support
- * Tests!
- * More Docs!
+- Heartbeat support
+- Better binary data support
+- Tests!
+- More Docs!
